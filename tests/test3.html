@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Fırıncı</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            margin-top: 50px;
+        }
+
+        #score {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        #clickButton {
+            padding: 10px 20px;
+            font-size: 24px;
+            cursor: pointer;
+            background-color: #FFD700;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-shadow: 1px 1px 2px #8B4513;
+        }
+
+        #clickButton:hover {
+            background-color: #FFB400;
+        }
+
+        .upgradeButton {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin-top: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            text-shadow: 1px 1px 2px #000000;
+            transition: background-color 0.3s ease;
+        }
+
+        .upgradeButton.disabled {
+            background-color: #4B0082;
+            color: #8A2BE2;
+            cursor: not-allowed;
+        }
+
+        .upgradeButton.disabled:hover {
+            background-color: #4B0082;
+        }
+
+        .upgradeButton:not(.disabled) {
+            background-color: #8A2BE2;
+            color: white;
+        }
+
+        .upgradeButton:not(.disabled):hover {
+            background-color: #9932CC;
+        }
+
+        .upgradeCost {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        #clickMultiplier {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        #clickIncrement {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        #activityLog {
+            margin-top: 20px;
+            text-align: left;
+            padding: 10px;
+            background-color: #ffffff;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .activityLogItem {
+            margin-bottom: 5px;
+            font-size: 14px;
+            text-align: left;
+            color: #555555;
+            border-bottom: 1px solid #cccccc;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Fırıncı</h1>
+    <div id="score">0 Kurabiye</div>
+    <button id="clickButton">Kurabiye Üret</button>
+    <div id="clickIncrement">+</div>
+
+    <h2>Fırıncılar</h2>
+    <button class="upgradeButton disabled" id="upgrade1">Fırıncı (+1 Kurabiye/sn)<div class="upgradeCost"
+            id="upgradeOnetxt">(-10 Kurabiye)</div>
+    </button>
+    <button class="upgradeButton disabled" id="upgrade2">Profesyonel Fırıncı (+2 Kurabiye/sn)<div class="upgradeCost"
+            id="upgradeTwotxt">(-20 Kurabiye)</div>
+    </button>
+    <button class="upgradeButton disabled" id="upgrade3">Usta Fırıncı (+3 Kurabiye/sn)<div class="upgradeCost"
+            id="upgradeThreetxt">(-30 Kurabiye)</div>
+    </button>
+
+    <h2>Artış Oranı</h2>
+    <div id="clickMultiplier">0.01 Kurabiye/sn</div>
+
+    <h2>Aktivite Logu</h2>
+    <div id="activityLog"></div>
+
+    <script>
+        var score = 0;
+        var clickMultiplier = 0.01;
+        var upgrade1CostRate = 0.35;
+        var upgrade2CostRate = 0.45;
+        var upgrade3CostRate = 0.55;
+        var upgrade1Cost = 10;
+        var upgrade2Cost = 20;
+        var upgrade3Cost = 30;
+
+        var activityLog = document.getElementById('activityLog');
+
+        // Tıklama olayını dinle
+        document.getElementById('clickButton').addEventListener('click', function () {
+            var increment = 1
+            score += parseFloat(increment);
+            document.getElementById('score').innerText = score.toFixed(2) + ' Kurabiye';
+            document.getElementById('clickIncrement').innerText = '+' + increment + ' Kurabiye';
+            logActivity('Kurabiye Üretildi: +' + increment + ' Kurabiye');
+        });
+
+        // Upgrade 1: Artış oranını 0.5 yap
+        document.getElementById('upgrade1').addEventListener('click', function () {
+            if (score >= upgrade1Cost) {
+                score -= upgrade1Cost;
+                clickMultiplier += 1;
+                upgrade1Cost += upgrade1Cost * upgrade1CostRate
+                document.getElementById('upgradeOnetxt').innerText = '(-' + upgrade1Cost.toFixed(2) + ' Kurabiye)';
+                document.getElementById('upgrade1').classList.add('disabled');
+                logActivity('Fırıncı alındı: Artış Oranı +1 Kurabiye/sn');
+            }
+        });
+
+        // Upgrade 2: Artış oranını 0.7 yap
+        document.getElementById('upgrade2').addEventListener('click', function () {
+            if (score >= upgrade2Cost) {
+                score -= upgrade2Cost;
+                clickMultiplier += 2;
+                upgrade2Cost += upgrade2Cost * upgrade2CostRate
+                document.getElementById('upgradeTwotxt').innerText = '(-' + upgrade2Cost.toFixed(2) + ' Kurabiye)';
+                document.getElementById('upgrade2').classList.add('disabled');
+                logActivity('Profesyonel Fırıncı alındı: Artış Oranı +2 Kurabiye/sn');
+            }
+        });
+
+        // Upgrade 3: Artış oranını 0.9 yap
+        document.getElementById('upgrade3').addEventListener('click', function () {
+            if (score >= upgrade3Cost) {
+                score -= upgrade3Cost;
+                clickMultiplier += 3;
+                upgrade3Cost += upgrade3Cost * upgrade3CostRate;
+                document.getElementById('upgradeThreetxt').innerText = '(-' + upgrade3Cost.toFixed(2) + ' Kurabiye)';
+                document.getElementById('upgrade3').classList.add('disabled');
+                logActivity('Usta Fırıncı alındı: Artış Oranı +3 Kurabiye/sn');
+            }
+        });
+
+        // Otomatik puan artışı
+        setInterval(function () {
+            var increment = clickMultiplier.toFixed();
+            score += parseFloat(increment);
+            document.getElementById('score').innerText = score.toFixed(2) + ' Kurabiye';
+            document.getElementById('clickMultiplier').innerText = increment + ' Kurabiye/sn';
+
+            // Upgrade'lerin pasif olup olmadığını kontrol et
+            if (score >= upgrade1Cost) {
+                document.getElementById('upgrade1').classList.remove('disabled');
+            } else {
+                document.getElementById('upgrade1').classList.add('disabled');
+            }
+
+            if (score >= upgrade2Cost) {
+                document.getElementById('upgrade2').classList.remove('disabled');
+            } else {
+                document.getElementById('upgrade2').classList.add('disabled');
+            }
+
+            if (score >= upgrade3Cost) {
+                document.getElementById('upgrade3').classList.remove('disabled');
+            } else {
+                document.getElementById('upgrade3').classList.add('disabled');
+            }
+        }, 1000);
+
+        // Aktivite logunu güncelle
+        function logActivity(activity) {
+            var logItem = document.createElement('div');
+            logItem.className = 'activityLogItem';
+            logItem.innerText = activity + ' (' + getCurrentTime() + ')';
+            activityLog.appendChild(logItem);
+            activityLog.scrollTop = activityLog.scrollHeight;
+        }
+
+        // Geçerli zamanı al
+        function getCurrentTime() {
+            var date = new Date();
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var seconds = date.getSeconds();
+            return formatTime(hours) + ':' + formatTime(minutes) + ':' + formatTime(seconds);
+        }
+
+        // Zaman formatını düzenle
+        function formatTime(time) {
+            return time < 10 ? '0' + time : time;
+        }
+    </script>
+</body>
+
+</html>

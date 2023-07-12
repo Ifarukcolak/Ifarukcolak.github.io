@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Idle Oyun</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            margin-top: 50px;
+        }
+
+        #score {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        #clickButton {
+            padding: 10px 20px;
+            font-size: 24px;
+            cursor: pointer;
+            background-color: #FFD700;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-shadow: 1px 1px 2px #8B4513;
+        }
+
+        #clickButton:hover {
+            background-color: #FFB400;
+        }
+
+        .upgradeButton {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin-top: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            text-shadow: 1px 1px 2px #000000;
+            transition: background-color 0.3s ease;
+        }
+
+        .upgradeButton.disabled {
+            background-color: #4B0082;
+            color: #8A2BE2;
+            cursor: not-allowed;
+        }
+
+        .upgradeButton.disabled:hover {
+            background-color: #4B0082;
+        }
+
+        .upgradeButton:not(.disabled) {
+            background-color: #8A2BE2;
+            color: white;
+        }
+
+        .upgradeButton:not(.disabled):hover {
+            background-color: #9932CC;
+        }
+
+        .upgradeCost {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        #clickMultiplier {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        #clickIncrement {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Idle Oyun</h1>
+    <div id="score">0</div>
+    <button id="clickButton">Tıkla!</button>
+    <div id="clickIncrement">+</div>
+
+    <h2>Upgrade'ler</h2>
+    <button class="upgradeButton disabled" id="upgrade1">+0.5<div class="upgradeCost" id="upgradeOnetxt">(-10)</div>
+    </button>
+    <button class="upgradeButton disabled" id="upgrade2">+0.7<div class="upgradeCost" id="upgradeTwotxt">(-20)</div>
+    </button>
+    <button class="upgradeButton disabled" id="upgrade3">+0.9<div class="upgradeCost" id="upgradeThreetxt">(-30)</div>
+    </button>
+
+    <h2>Artış Oranı</h2>
+    <div id="clickMultiplier">0.01</div>
+
+    <script>
+        var score = 0;
+        var clickMultiplier = 0.01;
+        var upgrade1CostRate = 0.25;
+        var upgrade2CostRate = 0.35;
+        var upgrade3CostRate = 0.45;
+        var upgrade1Cost = 10;
+        var upgrade2Cost = 20;
+        var upgrade3Cost = 30;
+
+        // Tıklama olayını dinle
+        document.getElementById('clickButton').addEventListener('click', function () {
+            score += 1;
+            document.getElementById('score').innerText = score.toFixed(2);
+            document.getElementById('clickIncrement').innerText = '+' + clickMultiplier.toFixed(2);
+        });
+
+        // Upgrade 1: Artış oranını 0.5 yap
+        document.getElementById('upgrade1').addEventListener('click', function () {
+            if (score >= upgrade1Cost) {
+                score -= upgrade1Cost;
+                clickMultiplier += 0.5;
+                upgrade1Cost += upgrade1Cost * upgrade1CostRate;
+                document.getElementById('upgradeOnetxt').innerText = '(-' + upgrade1Cost.toFixed(2) + ')';
+                document.getElementById('upgrade1').classList.add('disabled');
+            }
+        });
+
+        // Upgrade 2: Artış oranını 0.7 yap
+        document.getElementById('upgrade2').addEventListener('click', function () {
+            if (score >= upgrade2Cost) {
+                score -= upgrade2Cost;
+                clickMultiplier += 0.7;
+                upgrade2Cost += upgrade2Cost * upgrade2CostRate;
+                document.getElementById('upgradeTwotxt').innerText = '(-' + upgrade2Cost.toFixed(2) + ')';
+                document.getElementById('upgrade2').classList.add('disabled');
+            }
+        });
+
+        // Upgrade 3: Artış oranını 0.9 yap
+        document.getElementById('upgrade3').addEventListener('click', function () {
+            if (score >= upgrade3Cost) {
+                score -= upgrade3Cost;
+                clickMultiplier += 0.9;
+                upgrade3Cost += upgrade3Cost * upgrade3CostRate;
+                document.getElementById('upgradeThreetxt').innerText = '(-' + upgrade3Cost.toFixed(2) + ')';
+                document.getElementById('upgrade3').classList.add('disabled');
+            }
+        });
+
+        // Otomatik puan artışı
+        setInterval(function () {
+            score += clickMultiplier;
+            document.getElementById('score').innerText = score.toFixed(2);
+            document.getElementById('clickMultiplier').innerText = clickMultiplier.toFixed(2);
+
+            // Upgrade'lerin pasif olup olmadığını kontrol et
+            if (score >= upgrade1Cost) {
+                document.getElementById('upgrade1').classList.remove('disabled');
+            }else{
+                document.getElementById('upgrade1').classList.add('disabled');
+            }
+
+            if (score >= upgrade2Cost) {
+                document.getElementById('upgrade2').classList.remove('disabled');
+            }else{
+                document.getElementById('upgrade2').classList.add('disabled');
+            }
+
+            if (score >= upgrade3Cost) {
+                document.getElementById('upgrade3').classList.remove('disabled');
+            }
+            else{
+                document.getElementById('upgrade3').classList.add('disabled');
+            }
+        }, 1000);
+    </script>
+</body>
+
+</html>
